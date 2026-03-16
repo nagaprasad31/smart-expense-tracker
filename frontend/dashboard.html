@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smart Expense Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div id="globalErrorLog"
+        style="background: #ffcccc; color: #cc0000; padding: 10px; display: none; margin-bottom: 20px; border: 1px solid #cc0000; position: fixed; top: 0; left: 0; width: 100%; z-index: 10000;">
+    </div>
+    <script>
+        window.onerror = function (msg, url, line, col, error) {
+            var log = document.getElementById('globalErrorLog');
+            if (log) {
+                log.style.display = 'block';
+                log.innerHTML += 'Error: ' + msg + '<br>Line: ' + line + '<br>' + (error ? error.stack : '') + '<br><br>';
+            }
+            return false;
+        };
+        console.error = (function (old) {
+            return function () {
+                var log = document.getElementById('globalErrorLog');
+                if (log) {
+                    log.style.display = 'block';
+                    log.innerHTML += 'Console Error: ' + Array.from(arguments).join(' ') + '<br><br>';
+                }
+                old.apply(console, arguments);
+            }
+        })(console.error);
+        console.log("Dashboard Logger Initialized");
+    </script>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h2>🧠 Smart Expense Tracker</h2>
+        </div>
+        <div class="nav-menu">
+            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+            <a href="expenses.html" class="nav-link">Expenses</a>
+            <button id="logoutBtn" class="btn-secondary">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome back! 👋</h2>
+            <p>Here's your financial overview</p>
+        </div>
+
+        <div class="dashboard-cards">
+            <div class="card income-card">
+                <div class="card-header">
+                    <h3>Total Income</h3>
+                    <span class="card-icon">💰</span>
+                </div>
+                <div class="card-value">
+                    <span id="totalIncome">₹0.00</span>
+                </div>
+            </div>
+
+            <div class="card expense-card">
+                <div class="card-header">
+                    <h3>Total Expenses</h3>
+                    <span class="card-icon">💸</span>
+                </div>
+                <div class="card-value">
+                    <span id="totalExpenses">₹0.00</span>
+                </div>
+            </div>
+
+            <div class="card balance-card">
+                <div class="card-header">
+                    <h3>Current Balance</h3>
+                    <span class="card-icon">🏦</span>
+                </div>
+                <div class="card-value">
+                    <span id="currentBalance">₹0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <!-- Chart section removed as per user request -->
+
+            <div class="transactions-section" style="grid-column: 1 / -1;">
+                <div class="recent-transactions">
+                    <h3>Recent Transactions</h3>
+                    <div id="recentTransactionsList">
+                        <div class="loading">Loading transactions...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button id="addExpenseBtn" class="btn-primary">+ Add Expense</button>
+            <button id="addIncomeBtn" class="btn-success">+ Add Income</button>
+        </div>
+    </div>
+
+    <div id="expenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Expense</h3>
+                <span class="close" id="closeExpenseModal">&times;</span>
+            </div>
+            <form id="expenseForm">
+                <div class="input-group">
+                    <label for="expenseAmount">Amount (₹)</label>
+                    <input type="number" id="expenseAmount" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label for="expenseCategory">Category</label>
+                    <select id="expenseCategory" required>
+                        <option value="">Select Category</option>
+                        <option value="1">Food & Dining</option>
+                        <option value="2">Transportation</option>
+                        <option value="3">Shopping</option>
+                        <option value="4">Entertainment</option>
+                        <option value="5">Bills & Utilities</option>
+                        <option value="6">Healthcare</option>
+                        <option value="7">Others</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="expenseDescription">Description</label>
+                    <input type="text" id="expenseDescription" placeholder="Optional description">
+                </div>
+                <div class="input-group">
+                    <label for="expenseDate">Date</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <button type="submit" class="btn-primary">Add Expense</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="incomeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Income</h3>
+                <span class="close" id="closeIncomeModal">&times;</span>
+            </div>
+            <form id="incomeForm">
+                <div class="input-group">
+                    <label for="incomeAmount">Amount (₹)</label>
+                    <input type="number" id="incomeAmount" step="0.01" required>
+                </div>
+                <div class="input-group">
+                    <label for="incomeSource">Source</label>
+                    <input type="text" id="incomeSource" placeholder="e.g., Salary, Freelance" required>
+                </div>
+                <div class="input-group">
+                    <label for="incomeDate">Date</label>
+                    <input type="date" id="incomeDate" required>
+                </div>
+                <button type="submit" class="btn-success">Add Income</button>
+            </form>
+        </div>
+    </div>
+
+    <button id="chatbotFloatingBtn" class="chatbot-floating-btn">💬</button>
+
+    <div id="chatbot" class="chatbot-container hidden">
+        <div class="chatbot-header">
+            <h4>🤖 AI Financial Assistant</h4>
+            <button id="closeChatbot" class="close-btn">×</button>
+        </div>
+        <div id="chatMessages" class="chatbot-messages">
+            <div class="message bot-message">
+                Hi! I'm your AI financial assistant. Ask me about your spending patterns, savings tips, or monthly
+                summaries! 💡
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Ask about your expenses..." maxlength="200">
+            <button id="sendChatMessage" class="btn-primary">Send</button>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/chatbot.js"></script>
+</body>
+
+</html>
