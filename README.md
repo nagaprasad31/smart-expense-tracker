@@ -74,6 +74,19 @@ Follow these steps to run the project locally.
 
     *Note: The database (`expense_tracker.db`) is created automatically upon the first run.*
 
+
+![1](https://github.com/user-attachments/assets/fb237c23-c77b-440a-964b-0d0fc2e6196a)
+
+
+![2](https://github.com/user-attachments/assets/b74fe326-7877-4614-be84-a9c067e7213b)
+
+
+![3](https://github.com/user-attachments/assets/92b87925-c746-4c87-a9cb-bc57c1f7b1fc)
+
+
+![4](https://github.com/user-attachments/assets/0270d9fc-d666-4321-8bec-abe8ddbafe5f)
+
+
 ## 📡 API Reference
 
 The backend exposes a RESTful API to handle data operations.
