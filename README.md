@@ -45,7 +45,7 @@ Follow these steps to run the project locally.
 
 1.  **Clone the Repository**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/nagaprasad31/smart-expense-tracker
     cd expense-tracker/backend
     ```
 
